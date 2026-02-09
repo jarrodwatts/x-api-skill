@@ -17,6 +17,9 @@ Inside a Claude Code instance, run:
 npx skills add jarrodwatts/x-api-skill
 ```
 
+> 💡 **Tip:** You can also just ask your agent:  
+> _"Install the X API Skill https://github.com/jarrodwatts/x-api-skill"_  
+
 **Step 2: Set your tokens**
 
 Ask your agent how to set up the necessary tokens you need to use the X API, with a prompt such as:
