@@ -5,6 +5,8 @@ Let your AI agent use X (Twitter) on your behalf: post, reply, search, send DMs,
 [![License](https://img.shields.io/github/license/jarrodwatts/x-api-skill)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/jarrodwatts/x-api-skill)](https://github.com/jarrodwatts/x-api-skill/stargazers)
 
+![X API Skill banner](x-api-skill-banner-1.png)
+
 ## Install
 
 Inside a Claude Code instance, run:
