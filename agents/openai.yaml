@@ -1,0 +1,4 @@
+interface:
+  display_name: "X API (v2)"
+  short_description: "Curl-first X API integration"
+  default_prompt: "Use $x-api-skill to draft the correct X API curl requests (auth, fields/expansions, pagination, and rate limits) for what I want to do."
