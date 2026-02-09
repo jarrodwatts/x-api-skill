@@ -7,7 +7,7 @@ This file enumerates every `x-api/*` page from `docs.x.com/llms.txt`.
 
 Use ripgrep to find anything quickly:
 ```bash
-rg -n "/2/|OAuth2UserToken|BearerToken|tweet.write|dm.write|media" /Users/jarrod/x-api-skill/references/x-api-catalog.md
+rg -n "/2/|OAuth2UserToken|BearerToken|tweet.write|dm.write|media" references/x-api-catalog.md
 ```
 
 ## posts
@@ -1524,7 +1524,7 @@ curl -sS "https://api.x.com/2/notes/search/posts_eligible_for_notes" \
 
 ### Docs
 
-- null: `https://docs.x.com/x-api/community-notes/introduction.md`
+- Introduction: `https://docs.x.com/x-api/community-notes/introduction.md`
 - Quickstart: `https://docs.x.com/x-api/community-notes/quickstart.md`
 
 ## compliance
@@ -1579,6 +1579,8 @@ curl -sS "https://api.x.com/2/compliance/jobs" \
 - Important Resources: `https://docs.x.com/x-api/getting-started/important-resources.md`
 - Make Your First Request: `https://docs.x.com/x-api/getting-started/make-your-first-request.md`
 - Pricing: `https://docs.x.com/x-api/getting-started/pricing.md`
+- X API: `https://docs.x.com/x-api/introduction.md`
+- What to Build: `https://docs.x.com/x-api/what-to-build.md`
 
 ## communities
 
@@ -1735,16 +1737,4 @@ curl -sS "https://api.x.com/2/users/{id}/bookmarks/folders/{folder_id}" \
 curl -sS -X DELETE "https://api.x.com/2/connections/all" \
   -H "Authorization: Bearer $X_BEARER_TOKEN"
 ```
-
-## introduction.md
-
-### Docs
-
-- X API: `https://docs.x.com/x-api/introduction.md`
-
-## what-to-build.md
-
-### Docs
-
-- What to Build: `https://docs.x.com/x-api/what-to-build.md`
 

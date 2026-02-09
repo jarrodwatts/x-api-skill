@@ -1,4 +1,4 @@
 interface:
   display_name: "X API (v2)"
-  short_description: "Curl-first X API integration"
-  default_prompt: "Use $x-api-skill to draft the correct X API curl requests (auth, fields/expansions, pagination, and rate limits) for what I want to do."
+  short_description: "Autonomous agent actions on X"
+  default_prompt: "Use $x-api-skill to turn what I want to do on X into the correct API calls (post/reply/search/bookmarks/DMs). Choose the right auth automatically, ask me for any missing info (links/IDs), and be explicit about side effects before write actions."

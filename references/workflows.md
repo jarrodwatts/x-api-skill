@@ -1,6 +1,21 @@
 # Common Workflows
 
-This file is the "what endpoint should I use?" guide.
+This file is the “what should my agent do?” guide.
+
+## Common non-technical prompts → what the agent should do
+
+- “Tweet this: `...`”
+  - Use `POST /2/tweets` (requires OAuth user context: `X_USER_ACCESS_TOKEN` + `tweet.write`).
+- “Reply to this post: `https://x.com/.../status/123` with `...`”
+  - Extract the post id from the URL, then `POST /2/tweets` with `reply.in_reply_to_tweet_id`.
+- “What are people saying about `X` on Twitter?”
+  - Use `GET /2/tweets/search/recent`, cap results/pages, and include author info via `expansions=author_id`.
+- “What are my bookmarks?”
+  - First call `GET /2/users/me` to get the authenticated user id, then call `GET /2/users/:id/bookmarks`.
+- “Send a DM to `@username` saying `...`”
+  - Use `GET /2/users/by/username/:username` to get the participant id, then `POST /2/dm_conversations/with/:participant_id/messages`.
+- “What are my likes / who do I follow / who follows me?”
+  - First call `GET /2/users/me`, then call the appropriate `GET /2/users/:id/...` endpoint (likes/followers/following).
 
 ## Fetch A Post With Author Details
 
@@ -54,13 +69,15 @@ Delete:
 
 Always state the side effect and confirm the target ID.
 
+Tip: users often paste X links. The post id is the digits after `/status/` (treat it as a string).
+
 ## Send A Direct Message
 
 Flow:
-1. Create conversation: `POST /2/dm_conversations`
+1. Resolve the recipient:
+   - `GET /2/users/by/username/:username` → `data.id` = `PARTICIPANT_ID`
 2. Send message:
-   - to a conversation: `POST /2/dm_conversations/:dm_conversation_id/messages`
-   - to a participant: `POST /2/dm_conversations/with/:participant_id/messages`
+   - `POST /2/dm_conversations/with/:participant_id/messages`
 
 DM calls require OAuth 2.0 user context and `dm.write`.
 

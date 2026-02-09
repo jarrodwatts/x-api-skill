@@ -28,7 +28,7 @@ When in doubt, consult the v2 auth mapping doc for the specific endpoint.
 
 Pragmatic shortcut:
 - If you have the docs OpenAPI page URL for an endpoint, run:
-  - `python3 /Users/jarrod/x-api-skill/scripts/x_openapi_curl.py <url>`
+  - `python3 scripts/x_openapi_curl.py <url>`
   - This prints the endpoint path plus the `security:` block (schemes/scopes) and a curl skeleton.
 
 ## Bearer Token (App-Only)

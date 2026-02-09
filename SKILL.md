@@ -1,136 +1,79 @@
 ---
 name: x-api-skill
-description: Interact with the X (Twitter) API v2 and related add-ons using curl/HTTP: auth selection (OAuth 2.0, OAuth 1.0a, bearer), request shaping (fields/expansions), pagination, rate limits, error handling, and common endpoints (Posts, Users, Search, Streams, DMs, Lists, Spaces, Trends, Bookmarks, Communities, Compliance, Account Activity).
-compatibility: Requires curl and python3; expects network access to docs.x.com and api.x.com.
+description: "Let your AI agent use X (Twitter) on your behalf: post, reply, search, send DMs, bookmark, and follow. The agent will ask before doing anything that changes your account."
 ---
 
-# X API (v2) Skill
+# X API Skill (v2)
 
-## Use This When
+This skill helps an agent do one thing well: **take what you want to do on X and do it safely and correctly**, including asking for missing details and confirming before any action that changes your account.
 
-Use this skill when you need to:
-- Design or debug X API requests (curl/HTTP).
-- Choose authentication method for an endpoint (Bearer vs OAuth 2.0 user token vs OAuth 1.0a).
-- Pick `fields` and `expansions` to get the objects you need in one request.
-- Handle pagination, rate limits, retries/backoff, and error responses.
+Compatibility: requires `curl` and `python3`; expects network access to `docs.x.com` and `api.x.com`.
 
-This skill is curl-first. It prefers concrete requests over SDK advice.
+If you say “tweet this”, the agent should:
+- Draft the exact API call(s) needed.
+- Tell you what token type/scopes you need.
+- Ask for any missing IDs (user id, post id) or derive them safely.
+- Confirm any write action before executing.
 
-## Conventions
+## What you can ask (copy/paste)
 
-- Base API host: `https://api.x.com/2`.
-- Terminology: docs use **Post**, but many endpoint paths still use `tweets` (for example `GET /2/tweets/:id`).
-- Never inline secrets. Use env vars.
+- “Post this text: `...`”
+- “Reply to this post id `...` with: `...`”
+- “Quote-post `...` and say: `...`”
+- “Delete my post id `...`”
+- “Search recent posts for `query` and return the top 20 results”
+- “Set up a filtered stream rule for `query` and show me how to read results”
+- “Send a DM to `@username` saying `...`”
+- “Bookmark post id `...`”
+- “Follow `@username`”
 
-Suggested env vars:
-- `X_BEARER_TOKEN` (app-only)
-- `X_USER_ACCESS_TOKEN` (OAuth 2.0 user context)
-- `X_CLIENT_ID` (OAuth 2.0 PKCE)
-- `X_CLIENT_SECRET` (if applicable)
+## What this skill needs from you (tokens)
 
-## Quick Start (Read-Only)
+This skill never asks you to paste secrets. It expects tokens via environment variables:
+- **Read public data**: `X_BEARER_TOKEN` (app-only bearer token)
+- **Do anything as a user** (post/reply/delete, bookmarks, DMs, follow/unfollow, etc.): `X_USER_ACCESS_TOKEN` (OAuth user context)
 
-1. Identify the resource and endpoint (Posts, Users, Search, Streams, etc.).
-2. Decide auth:
-   - Public read: usually `Authorization: Bearer $X_BEARER_TOKEN`.
-   - User actions (create/delete, bookmarks, DMs): OAuth user context.
-3. Add only the `fields` and `expansions` you need.
-4. Run the request; on `429`, read `x-rate-limit-reset` and back off.
+If an endpoint requires OAuth 1.0a (some legacy surfaces), the agent should call that out explicitly and avoid recommending it unless required.
 
-Example (lookup a user by username):
-```bash
-curl -sS "https://api.x.com/2/users/by/username/xdevelopers" \
-  -H "Authorization: Bearer $X_BEARER_TOKEN"
-```
+## Setup: create an app (onboarding)
 
-## Request Shaping: `fields` + `expansions`
+If you haven’t created an app/credentials yet, start in the [Developer Console](https://console.x.com/):
+- Create an app
+- Generate credentials (Bearer Token for read-only; OAuth 2.0 Client ID/Secret for user actions)
+- Allowlist callback URLs for OAuth (exact match; local dev should use `http://127.0.0.1`)
 
-The v2 pattern is:
-- Ask for extra object properties with `*.fields=` (for example `tweet.fields=created_at,public_metrics`).
-- Pull related objects into `includes` with `expansions=` (for example `expansions=author_id`).
+Reference: `references/apps-and-credentials.md`
 
-When you need details for related objects, also request their fields (for example `user.fields=username,verified`).
+## Documentation index (for this skill’s sources)
 
-Read: `/Users/jarrod/x-api-skill/references/request-shapes.md`
+To discover official X docs pages quickly, the agent can start from:
+- `https://docs.x.com/llms.txt`
 
-## Pagination
+## What the agent should output
 
-Most collection endpoints page via `next_token` (request param) and `meta.next_token` (response).
+When answering, prefer a small, concrete plan and then the exact request(s):
+- **Endpoint(s)** (method + path)
+- **Auth mode** (bearer vs user context) and required **scopes** when known
+- **curl** command(s) using env vars (never inline tokens)
+- **Request shaping**: `fields` / `expansions` only when needed
+- **Pagination**: a stop condition (page cap, result cap, time bounds)
+- **Rate limits**: how to behave on `429` using response headers
+- **Errors**: how to interpret `401/403/429/5xx` and what to fix vs retry
 
-Read: `/Users/jarrod/x-api-skill/references/request-shapes.md`
+## Important behavior rules
 
-## Rate Limits
+- **Default to least-privileged**: use bearer only for read-only public data; use user context for writes.
+- **Be explicit about side effects**: for write actions, state what will happen and confirm before executing.
+- **Avoid bulk actions by default**: if a user asks for bulk deletes/DMs/follows, require a cap and mention rate limits + compliance considerations.
+- **Use stable identifiers**: treat IDs as strings (do not parse as numbers).
+- **Minimize follow-up calls**: use `expansions` + `*.fields` to avoid N+1 patterns when it meaningfully reduces requests.
 
-Always capture and respect:
-- `x-rate-limit-limit`
-- `x-rate-limit-remaining`
-- `x-rate-limit-reset`
+## Deeper references (optional)
 
-Read: `/Users/jarrod/x-api-skill/references/fundamentals-rate-limits.md`
-
-## Errors and Retries
-
-Treat errors as data:
-- Parse the response body.
-- Use the HTTP status code to decide retry vs fix request.
-
-Read: `/Users/jarrod/x-api-skill/references/fundamentals-errors.md`
-
-## Write Actions
-
-Write endpoints are included. When drafting write requests:
-- State side effects in plain language (create/delete, send DM, follow/unfollow).
-- Prefer idempotent patterns where possible.
-- Avoid suggesting bulk actions without rate-limit and compliance considerations.
-
-Note: in most agent harnesses, executing curl will still require user permission; this skill focuses on correctness of the request.
-
-## Reference Map
-
-Start here:
-- `/Users/jarrod/x-api-skill/references/docs-map.md`
-- `/Users/jarrod/x-api-skill/references/workflows.md`
-- `/Users/jarrod/x-api-skill/references/x-api-groups.md`
-- `/Users/jarrod/x-api-skill/references/x-api-catalog.md`
-- Group references: each feature file in `/Users/jarrod/x-api-skill/references/` contains a curated section first, then an autogenerated inventory between `BEGIN AUTOGENERATED X API DOCS` markers.
-
-Fundamentals:
-- `/Users/jarrod/x-api-skill/references/fundamentals-auth.md`
-- `/Users/jarrod/x-api-skill/references/fundamentals-rate-limits.md`
-- `/Users/jarrod/x-api-skill/references/fundamentals-security.md`
-- `/Users/jarrod/x-api-skill/references/fundamentals-errors.md`
-- `/Users/jarrod/x-api-skill/references/fundamentals-ids.md`
-- `/Users/jarrod/x-api-skill/references/fundamentals-counting-characters.md`
-
-Core endpoints:
-- `/Users/jarrod/x-api-skill/references/posts.md`
-- `/Users/jarrod/x-api-skill/references/search.md`
-- `/Users/jarrod/x-api-skill/references/streams.md`
-- `/Users/jarrod/x-api-skill/references/users.md`
-- `/Users/jarrod/x-api-skill/references/lists.md`
-- `/Users/jarrod/x-api-skill/references/spaces.md`
-- `/Users/jarrod/x-api-skill/references/direct-messages.md`
-- `/Users/jarrod/x-api-skill/references/trends.md`
-
-Add-ons:
-- `/Users/jarrod/x-api-skill/references/bookmarks.md`
-- `/Users/jarrod/x-api-skill/references/communities.md`
-- `/Users/jarrod/x-api-skill/references/community-notes.md`
-- `/Users/jarrod/x-api-skill/references/compliance.md`
-- `/Users/jarrod/x-api-skill/references/account-activity.md`
-- `/Users/jarrod/x-api-skill/references/activity.md`
-- `/Users/jarrod/x-api-skill/references/connections.md`
-
-## How To Find The Right Doc Fast
-
-The docs index is long. Use ripgrep patterns against `/Users/jarrod/x-api-skill/references/docs-map.md`:
-```bash
-rg -n "create-post|delete-post|get-post|search|filtered-stream|dm|direct message|lists|spaces|trends|bookmarks|compliance|account activity" /Users/jarrod/x-api-skill/references/docs-map.md
-```
-
-## Helper: Generate Curl Skeleton From A Docs URL
-
-If you have an X docs OpenAPI page URL and want a quick curl skeleton (method, path, auth schemes/scopes):
-```bash
-python3 /Users/jarrod/x-api-skill/scripts/x_openapi_curl.py https://docs.x.com/x-api/posts/get-post-by-id.md
-```
+If you need the detailed docs map or topic guides:
+- `references/getting-started.md`
+- `references/docs-map.md`
+- `references/workflows.md`
+- `references/request-shapes.md`
+- `references/fundamentals-auth.md`
+- `references/apps-and-credentials.md`

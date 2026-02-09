@@ -136,6 +136,6 @@ Communities (read `communities.md`):
 
 - The full `llms.txt` includes more endpoints than this map. This is a curated v1 optimized for common workflows.
 - For comprehensive coverage of *all* `x-api/*` docs (endpoints + non-endpoint docs), see:
-  - `/Users/jarrod/x-api-skill/references/x-api-groups.md`
-  - `/Users/jarrod/x-api-skill/references/x-api-catalog.md`
+  - `references/x-api-groups.md`
+  - `references/x-api-catalog.md`
 - When adding coverage, prefer updating this map and then adding or extending a specific reference file.
