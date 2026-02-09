@@ -1,30 +1,82 @@
-# x-api-skill
+# X API Skill
 
-Codex skill for turning plain-English requests into correct X API (Twitter API v2) request(s): endpoint selection, auth mode (bearer vs user-context), scopes, params (`fields`, `expansions`), pagination, and write-action safety.
+Let your AI agent use X (Twitter) on your behalf: post, reply, search, send DMs, bookmark, and follow and more - anything that is possible via the new [X API](https://console.x.com/).
 
-## Install (via skills CLI)
+[![License](https://img.shields.io/github/license/jarrodwatts/x-api-skill)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/jarrodwatts/x-api-skill)](https://github.com/jarrodwatts/x-api-skill/stargazers)
 
-List skills in a repo (sanity check):
+## Install
 
-```bash
-npx skills add <owner>/<repo> --list
+Inside a Claude Code instance, run:
+
+**Step 1: Install the skill**
+
+```
+npx skills add jarrodwatts/x-api-skill
 ```
 
-Install this skill from GitHub:
+**Step 2: Set your tokens**
 
-```bash
-npx skills add <owner>/x-api-skill
+Ask your agent how to set up the necessary tokens you need to use the X API, with a prompt such as:
+
+```
+Using /x-api-skill - help me set up the necessary tokens to use the X API. 
 ```
 
-If you have a multi-skill repo, select a specific skill:
+Or see [references/apps-and-credentials.md](references/apps-and-credentials.md) for a more detailed guide.
 
-```bash
-npx skills add <owner>/<repo> --skill x-api-skill
-```
+**Step 3: Start using it**
 
-## Repo requirements for `npx skills add`
+Just ask Claude what you want to do:
 
-- `SKILL.md` exists (root for a single-skill repo, or in each skill directory for a multi-skill repo).
-- `SKILL.md` has YAML frontmatter with `name` and `description`.
-- Any referenced files (like `references/...` or `scripts/...`) are repo-relative paths that exist.
+- "Search recent posts about `topic`"
+- "Reply to this post with: `...`"
+- "Send a DM to `@username` saying `...`"
+- "Bookmark post `https://x.com/.../status/123`"
+- "Follow `@username`"
 
+Done! The skill handles endpoint selection, auth, pagination, and rate limits automatically.
+
+---
+
+## What It Does
+
+The skill teaches your agent how to use the X API correctly so you don't have to.
+
+| Capability | What Happens |
+|------------|--------------|
+| **Endpoint selection** | Picks the right method + path for your request |
+| **Auth handling** | Bearer for reads, user-context for writes — automatically |
+| **Request shaping** | Adds `fields`/`expansions` to minimize API calls |
+| **Pagination** | Handles multi-page results with clear stop conditions |
+| **Rate limits** | Backs off on `429` using response headers |
+| **Error guidance** | Interprets `401/403/429/5xx` with fix-vs-retry advice |
+| **Safety** | States side effects and confirms before any write action |
+
+---
+
+## How It Works
+
+The skill is a set of curated guidelines and reference docs that get loaded into your agent's context. When you ask it to do something on X, it:
+
+1. Identifies the right X API v2 endpoint
+2. Picks the correct auth mode and scopes
+3. Builds the request (using env vars — never inline tokens)
+4. For write actions: tells you exactly what it will do and asks for confirmation
+5. Executes and handles pagination/errors
+
+---
+
+## Troubleshooting
+
+| Error | Fix |
+|-------|-----|
+| **401 Unauthorized** | Token missing, invalid, or expired. Regenerate in the [Developer Console](https://console.x.com/). |
+| **403 Forbidden** | Missing scopes or insufficient app access level for the endpoint. |
+| **429 Too Many Requests** | Rate limited — the agent will back off automatically. Reduce request volume if persistent. |
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE)

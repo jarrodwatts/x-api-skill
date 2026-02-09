@@ -1,21 +1,24 @@
 ---
 name: x-api-skill
-description: "Let your AI agent use X (Twitter) on your behalf: post, reply, search, send DMs, bookmark, and follow. The agent will ask before doing anything that changes your account."
+description: "X (Twitter) API usage and safe automation guidelines. This skill should be used when interacting with X (Twitter), including creating posts, reading the timeline, sending messages, or any other X (Twitter) capabilities that can be executed via API requests (post/reply/search, DMs, bookmarks, follows, auth, DMs, spaces, etc.)."
 ---
 
-# X API Skill (v2)
+# X API Skill
 
-This skill helps an agent do one thing well: **take what you want to do on X and do it safely and correctly**, including asking for missing details and confirming before any action that changes your account.
+This skill is a set of guidelines and tools for interacting with X (Twitter) via the X API (https://console.x.com/) and docs (https://docs.x.com/overview). Use the suite of `.md` files in `/references` for more detailed information and examples.
 
 Compatibility: requires `curl` and `python3`; expects network access to `docs.x.com` and `api.x.com`.
 
-If you say “tweet this”, the agent should:
-- Draft the exact API call(s) needed.
-- Tell you what token type/scopes you need.
-- Ask for any missing IDs (user id, post id) or derive them safely.
-- Confirm any write action before executing.
+## When to Apply
 
-## What you can ask (copy/paste)
+Reference these guidelines when:
+
+- Performing any action on X (Twitter) that can be executed via API requests (post/reply/search, DMs, bookmarks, follows, auth, DMs, spaces, etc.)
+- Understanding how to use the X (Twitter) API
+- Setting up X (Twitter) API credentials (https://console.x.com/)
+- Understanding the X (Twitter) API documentation (https://docs.x.com/overview)
+
+## Example prompts of when to apply this skill
 
 - “Post this text: `...`”
 - “Reply to this post id `...` with: `...`”
