@@ -2,7 +2,7 @@
 
 Let your AI agent use X (Twitter) on your behalf: post, reply, search, send DMs, bookmark, and follow and more - anything that is possible via the new [X API](https://console.x.com/).
 
-[![License](https://img.shields.io/github/license/jarrodwatts/x-api-skill)](LICENSE)
+[![License](https://img.shields.io/github/license/jarrodwatts/x-api-skill?v=2)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/jarrodwatts/x-api-skill)](https://github.com/jarrodwatts/x-api-skill/stargazers)
 
 ![X API Skill banner](x-api-skill-banner-5-2.png)
