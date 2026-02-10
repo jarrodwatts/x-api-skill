@@ -72,6 +72,22 @@ The skill is a set of curated guidelines and reference docs that get loaded into
 
 ---
 
+## Compliance
+
+This skill uses the official [X API v2](https://docs.x.com/) and is designed to follow X's [Automation Rules](https://help.x.com/en/rules-and-policies/x-automation) and [Developer Agreement](https://developer.x.com/en/developer-terms/agreement-and-policy). The skill confirms before executing any write action and avoids bulk operations by default.
+
+You are responsible for how you use the API. In particular:
+
+- Get explicit consent before sending automated replies or DMs
+- Respect opt-out requests immediately
+- Never perform bulk, aggressive, or spammy actions (bulk following, bulk DMs, etc.)
+- Never post identical or substantially similar content across multiple accounts
+- If operating a bot account, clearly indicate it in the profile bio
+
+For full details, see X's [platform manipulation and spam policy](https://help.x.com/en/rules-and-policies/platform-manipulation).
+
+---
+
 ## Troubleshooting
 
 | Error | Fix |

@@ -71,6 +71,18 @@ When answering, prefer a small, concrete plan and then the exact request(s):
 - **Use stable identifiers**: treat IDs as strings (do not parse as numbers).
 - **Minimize follow-up calls**: use `expansions` + `*.fields` to avoid N+1 patterns when it meaningfully reduces requests.
 
+## Automation & spam compliance
+
+All usage must follow X's Automation Rules (https://help.x.com/en/rules-and-policies/x-automation) and Developer Agreement (https://developer.x.com/en/developer-terms/agreement-and-policy). Key rules:
+
+- **Consent before outreach**: never send automated replies or DMs without explicit opt-in from the recipient.
+- **Honor opt-outs immediately**: if someone asks to stop being contacted, stop.
+- **No bulk/aggressive actions**: no mass following, unfollowing, liking, or DMing. Always cap and pace automated actions.
+- **No duplicate content**: never post identical or substantially similar content across multiple accounts.
+- **Bot disclosure**: if operating a bot account, the profile bio must clearly state it is a bot and who is responsible for it.
+- **No trend manipulation**: do not automatically post about trending topics or attempt to manipulate trends.
+- **No keyword-only replies**: sending automated replies based on keyword searches alone (without prior opt-in) is prohibited.
+
 ## Deeper references (optional)
 
 If you need the detailed docs map or topic guides:
